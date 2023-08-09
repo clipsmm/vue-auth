@@ -1,6 +1,6 @@
-import * as __utils  from './lib/utils.js';
-import * as __token  from './lib/token.js';
 import * as __cookie from './lib/cookie.js';
+import * as __token from './lib/token.js';
+import * as __utils from './lib/utils.js';
 
 var __auth = null;
 
@@ -8,37 +8,37 @@ var __defaultOptions = {
 
     // Variables
 
-    rolesKey:            'roles',
-    rememberKey:         'auth_remember',
-    staySignedInKey:     'auth_stay_signed_in',
-    tokenDefaultKey:     'auth_token_default',
+    rolesKey: 'roles',
+    rememberKey: 'auth_remember',
+    staySignedInKey: 'auth_stay_signed_in',
+    tokenDefaultKey: 'auth_token_default',
     tokenImpersonateKey: 'auth_token_impersonate',
-    stores:              ['storage', 'cookie'],
+    stores: ['storage', 'cookie'],
 
     cookie: {
-        Path:     '/',
-        Domain:   null,
-        Secure:   true,
-        Expires:  12096e5,
+        Path: '/',
+        Domain: null,
+        Secure: true,
+        Expires: 12096e5,
         SameSite: 'None',
     },
 
     // Redirects
 
-    authRedirect:       {path: '/login'},
-    forbiddenRedirect:  {path: '/403'},
-    notFoundRedirect:   {path: '/404'},
+    authRedirect: { path: '/login' },
+    forbiddenRedirect: { path: '/403' },
+    notFoundRedirect: { path: '/404' },
 
     // Http
 
-    registerData:       {url: 'auth/register',      method: 'POST', redirect: '/login',                  autoLogin: false           },
-    loginData:          {url: 'auth/login',         method: 'POST', redirect: '/',      fetchUser: true, staySignedIn: true         },
-    logoutData:         {url: 'auth/logout',        method: 'POST', redirect: '/',                       makeRequest: false         },
-    fetchData:          {url: 'auth/user',          method: 'GET',                                       enabled: true              },
-    refreshData:        {url: 'auth/refresh',       method: 'GET',                                       enabled: true, interval: 30},
-    impersonateData:    {url: 'auth/impersonate',   method: 'POST', redirect: '/',      fetchUser: true                             },
-    unimpersonateData:  {url: 'auth/unimpersonate', method: 'POST', redirect: '/admin', fetchUser: true, makeRequest: false         },
-    oauth2Data:         {url: 'auth/social',        method: 'POST', redirect: '/',      fetchUser:true                              },
+    registerData: { url: 'auth/register', method: 'POST', redirect: '/login', autoLogin: false },
+    loginData: { url: 'auth/login', method: 'POST', redirect: '/', fetchUser: true, staySignedIn: true },
+    logoutData: { url: 'auth/logout', method: 'POST', redirect: '/', makeRequest: false },
+    fetchData: { url: 'auth/user', method: 'GET', enabled: true },
+    refreshData: { url: 'auth/refresh', method: 'GET', enabled: true, interval: 30 },
+    impersonateData: { url: 'auth/impersonate', method: 'POST', redirect: '/', fetchUser: true },
+    unimpersonateData: { url: 'auth/unimpersonate', method: 'POST', redirect: '/admin', fetchUser: true, makeRequest: false },
+    oauth2Data: { url: 'auth/social', method: 'POST', redirect: '/', fetchUser: true },
 
     // External
 
@@ -60,7 +60,7 @@ function _isAccess(role, key) {
 }
 
 function _isTokenExpired() {
-    return ! __token.get.call(__auth);
+    return !__token.get.call(__auth);
 }
 
 function _getAuthMeta(transition) {
@@ -130,7 +130,7 @@ function _setRemember(val) {
     }
 }
 
-function _setTransitions (transition) {
+function _setTransitions(transition) {
     __auth.transitionPrev = __auth.transitionThis;
     __auth.transitionThis = transition;
 }
@@ -157,9 +157,9 @@ function _parseRequestIntercept(req) {
     var token,
         tokenName;
 
-    if (req && req.ignoreVueAuth) {
-        return req;
-    }
+    // if (req && req.ignoreVueAuth) {
+    //     return req;
+    // }
 
     if (
         req.impersonating === false &&
@@ -232,9 +232,9 @@ function _processRouterBeforeEach(cb) {
     ) {
         __auth
             .refresh()
-            .then(function() {
+            .then(function () {
                 _processAuthenticated(cb);
-            }, function() {
+            }, function () {
                 _processAuthenticated(cb);
             });
 
@@ -273,7 +273,7 @@ function _processTransitionEach(transition, routeAuth, cb) {
     routeAuth = __utils.toArray((routeAuth || '').roles !== undefined ? routeAuth.roles : routeAuth);
 
     if (routeAuth && (routeAuth === true || routeAuth.constructor === Array || __utils.isObject(routeAuth))) {
-        if ( ! __auth.check()) {
+        if (!__auth.check()) {
             __auth.transitionRedirectType = 401;
 
             if (typeof authRedirect === 'function') {
@@ -282,7 +282,7 @@ function _processTransitionEach(transition, routeAuth, cb) {
 
             cb.call(__auth, authRedirect);
         }
-        else if ((routeAuth.constructor === Array || __utils.isObject(routeAuth)) && ! __utils.compare(routeAuth, __utils.getProperty((__auth.$vm.state.data || {}), rolesKey))) {
+        else if ((routeAuth.constructor === Array || __utils.isObject(routeAuth)) && !__utils.compare(routeAuth, __utils.getProperty((__auth.$vm.state.data || {}), rolesKey))) {
             __auth.transitionRedirectType = 403;
 
             if (typeof forbiddenRedirect === 'function') {
@@ -293,7 +293,7 @@ function _processTransitionEach(transition, routeAuth, cb) {
         }
         else {
             if ((__auth.transitionPrev || {}).path !== __auth.transitionThis.path) {
-                __auth.$vm.state.redirect = __auth.transitionRedirectType ? {type: __auth.transitionRedirectType, from: __auth.transitionPrev, to: __auth.transitionThis} : null;
+                __auth.$vm.state.redirect = __auth.transitionRedirectType ? { type: __auth.transitionRedirectType, from: __auth.transitionPrev, to: __auth.transitionThis } : null;
                 __auth.transitionRedirectType = null;
             }
 
@@ -311,7 +311,7 @@ function _processTransitionEach(transition, routeAuth, cb) {
     }
     else {
         if ((__auth.transitionPrev || {}).path !== __auth.transitionThis.path) {
-            __auth.$vm.state.redirect = __auth.transitionRedirectType ? {type: __auth.transitionRedirectType, from: __auth.transitionPrev, to: __auth.transitionThis} : null;
+            __auth.$vm.state.redirect = __auth.transitionRedirectType ? { type: __auth.transitionRedirectType, from: __auth.transitionPrev, to: __auth.transitionThis } : null;
             __auth.transitionRedirectType = null;
         }
 
@@ -387,7 +387,7 @@ function _initDriverCheck() {
     var drivers = ['auth', 'http', 'router'];
 
     for (i = 0, ii = drivers.length; i < ii; i++) {
-        if ( ! __auth.drivers[drivers[i]]) {
+        if (!__auth.drivers[drivers[i]]) {
             console.error('Error (@websanova/vue-auth): "' + drivers[i] + '" driver must be set.');
 
             return false;
@@ -428,10 +428,10 @@ function _initInterceptors() {
 }
 
 function Auth(Vue, options) {
-    __auth  = this;
+    __auth = this;
 
     options = options || {};
-    
+
     this.plugins = options.plugins;
     this.drivers = options.drivers;
     this.options = __utils.extend(__defaultOptions, options.options);
@@ -442,9 +442,9 @@ function Auth(Vue, options) {
 
     // Init vars.
 
-    this.currentToken           = null;
-    this.transitionPrev         = null;
-    this.transitionThis         = null;
+    this.currentToken = null;
+    this.transitionPrev = null;
+    this.transitionThis = null;
     this.transitionRedirectType = null;
 
     _initDriverCheck();
@@ -461,10 +461,10 @@ Auth.prototype.ready = function () {
 };
 
 Auth.prototype.load = function () {
-    return new Promise(function(resolve) {
+    return new Promise(function (resolve) {
         var timer = null;
 
-        timer = setInterval(function() {
+        timer = setInterval(function () {
             if (__auth.$vm.state.loaded) {
                 clearInterval(timer);
 
@@ -518,10 +518,10 @@ Auth.prototype.token = function (name, token, expires) {
 Auth.prototype.fetch = function (data) {
     data = __utils.extend(__auth.options.fetchData, data);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         __auth.drivers.http.http
             .call(__auth, data)
-            .then(function(res) {
+            .then(function (res) {
                 _processFetch(_parseUserResponseData(res), data.redirect);
 
                 resolve(res);
@@ -543,10 +543,10 @@ Auth.prototype.register = function (data) {
         _setStaySignedIn(registerData.staySignedIn);
     }
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         __auth.drivers.http.http
             .call(__auth, registerData)
-            .then(function(res) {
+            .then(function (res) {
                 var loginData;
 
                 if (registerData.autoLogin) {
@@ -571,10 +571,10 @@ Auth.prototype.login = function (data) {
     _setRemember(data.remember);
     _setStaySignedIn(data.staySignedIn);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         __auth.drivers.http.http
             .call(__auth, data)
-            .then(function(res) {
+            .then(function (res) {
                 if (
                     data.fetchUser ||
                     (data.fetchUser === undefined && __auth.options.fetchData.enabled)
@@ -590,7 +590,7 @@ Auth.prototype.login = function (data) {
 
                     resolve(res);
                 }
-            }, function(res) {
+            }, function (res) {
                 _setAuthenticated(false);
 
                 reject(res);
@@ -619,11 +619,11 @@ Auth.prototype.unremember = function () {
 Auth.prototype.logout = function (data) {
     data = __utils.extend(__auth.options.logoutData, data);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         if (data.makeRequest) {
             __auth.drivers.http.http
                 .call(__auth, data)
-                .then(function(res) {
+                .then(function (res) {
                     _processLogout(data.redirect);
 
                     resolve(res)
@@ -640,12 +640,12 @@ Auth.prototype.logout = function (data) {
 Auth.prototype.impersonate = function (data) {
     data = __utils.extend(__auth.options.impersonateData, data);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         var token = __auth.token();
 
         __auth.drivers.http.http
             .call(__auth, data)
-            .then(function(res) {
+            .then(function (res) {
                 _processImpersonate(token);
 
                 if (
@@ -670,7 +670,7 @@ Auth.prototype.impersonate = function (data) {
 Auth.prototype.unimpersonate = function (data) {
     data = __utils.extend(__auth.options.unimpersonateData, data);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         if (data.makeRequest) {
             __auth.drivers.http.http
                 .call(__auth, data)
@@ -680,27 +680,27 @@ Auth.prototype.unimpersonate = function (data) {
             resolve();
         }
     })
-    .then(function() {
-        return new Promise(function(resolve, reject) {
-            _processUnimpersonate();
+        .then(function () {
+            return new Promise(function (resolve, reject) {
+                _processUnimpersonate();
 
-            if (
-                data.fetchUser ||
-                (data.fetchUser === undefined && __auth.options.fetchData.enabled)
-            ) {
-                __auth
-                    .fetch({
-                        redirect: data.redirect
-                    })
-                    .then(resolve, reject);
-            }
-            else {
-                _processRedirect(data.redirect);
+                if (
+                    data.fetchUser ||
+                    (data.fetchUser === undefined && __auth.options.fetchData.enabled)
+                ) {
+                    __auth
+                        .fetch({
+                            redirect: data.redirect
+                        })
+                        .then(resolve, reject);
+                }
+                else {
+                    _processRedirect(data.redirect);
 
-                resolve();
-            }
+                    resolve();
+                }
+            });
         });
-    });
 };
 
 Auth.prototype.oauth2 = function (type, data) {
@@ -729,7 +729,7 @@ Auth.prototype.oauth2 = function (type, data) {
 
     data = __utils.extend(__auth.drivers.oauth2[type], data);
 
-    data.params.state        = JSON.stringify(data.params.state || {});
+    data.params.state = JSON.stringify(data.params.state || {});
     data.params.redirect_uri = _parseRedirectUri(data.params.redirect_uri);
 
     Object.keys(data.params).forEach((key) => {
